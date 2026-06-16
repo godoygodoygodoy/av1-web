@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 // Loads frames from assets reliably using import.meta.globEager
 function loadFramesFromAssets(baseNames = ['pacman', 'pacman s', 'pacman-s']) {
-  // glob all image assets under src/assets
-  const modules = import.meta.globEager('../../assets/**/*.{png,jpg,jpeg,webp}');
+  // glob all image assets under src/assets (use eager option for compatibility)
+  const modules = import.meta.glob('../../assets/**/*.{png,jpg,jpeg,webp}', { eager: true });
   const entries = Object.entries(modules);
 
   for (const base of baseNames) {
