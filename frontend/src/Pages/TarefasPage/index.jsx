@@ -188,57 +188,63 @@ export default function TaskFlow() {
           </button>
         </form>
 
-        {/* Optional fields chooser */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={includeDate} onChange={(e) => setIncludeDate(e.target.checked)} /> Quando
-          </label>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={includePriority} onChange={(e) => setIncludePriority(e.target.checked)} /> Prioridade
-          </label>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={includeNotes} onChange={(e) => setIncludeNotes(e.target.checked)} /> Notas
-          </label>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={includeSubtasks} onChange={(e) => setIncludeSubtasks(e.target.checked)} /> Subtarefas
-          </label>
-        </div>
-
-        {includeDate && (
-          <div className="mb-3">
-            <input type="date" value={dateValue} onChange={(e) => setDateValue(e.target.value)} className="rounded px-3 py-2" />
-          </div>
-        )}
-        {includePriority && (
-          <div className="mb-3">
-            <select value={priorityValue} onChange={(e) => setPriorityValue(e.target.value)} className="rounded px-3 py-2">
-              <option value="">-- escolha --</option>
-              <option value="low">Baixa</option>
-              <option value="medium">Média</option>
-              <option value="high">Alta</option>
-            </select>
-          </div>
-        )}
-        {includeNotes && (
-          <div className="mb-3">
-            <textarea placeholder="Notas adicionais" value={notesValue} onChange={(e) => setNotesValue(e.target.value)} className="w-full rounded px-3 py-2" />
-          </div>
-        )}
-        {includeSubtasks && (
-          <div className="mb-3">
-            <div className="flex gap-2 mb-2">
-              <input value={subtaskText} onChange={(e) => setSubtaskText(e.target.value)} placeholder="Adicionar subtarefa" className="flex-1 rounded px-3 py-2" />
-              <button onClick={() => { if (subtaskText.trim()) { setSubtasks(s => [...s, { text: subtaskText.trim(), done: false }]); setSubtaskText(''); } }} className="px-3 py-2 rounded bg-slate-800 text-white">Adicionar</button>
+        {/* Optional fields chooser: only show after typing a title */}
+        {novaTarefa.trim() ? (
+          <>
+            <div className="flex flex-wrap gap-3 mb-6">
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={includeDate} onChange={(e) => setIncludeDate(e.target.checked)} /> Quando
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={includePriority} onChange={(e) => setIncludePriority(e.target.checked)} /> Prioridade
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={includeNotes} onChange={(e) => setIncludeNotes(e.target.checked)} /> Notas
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={includeSubtasks} onChange={(e) => setIncludeSubtasks(e.target.checked)} /> Subtarefas
+              </label>
             </div>
-            <ul className="list-disc pl-5 text-sm">
-              {subtasks.map((st, idx) => (
-                <li key={idx} className="flex items-center justify-between">
-                  <span>{st.text}</span>
-                  <button onClick={() => setSubtasks(s => s.filter((_, i) => i !== idx))} className="text-xs text-red-400">Remover</button>
-                </li>
-              ))}
-            </ul>
-          </div>
+
+            {includeDate && (
+              <div className="mb-3">
+                <input type="date" value={dateValue} onChange={(e) => setDateValue(e.target.value)} className="rounded px-3 py-2" />
+              </div>
+            )}
+            {includePriority && (
+              <div className="mb-3">
+                <select value={priorityValue} onChange={(e) => setPriorityValue(e.target.value)} className="rounded px-3 py-2">
+                  <option value="">-- escolha --</option>
+                  <option value="low">Baixa</option>
+                  <option value="medium">Média</option>
+                  <option value="high">Alta</option>
+                </select>
+              </div>
+            )}
+            {includeNotes && (
+              <div className="mb-3">
+                <textarea placeholder="Notas adicionais" value={notesValue} onChange={(e) => setNotesValue(e.target.value)} className="w-full rounded px-3 py-2" />
+              </div>
+            )}
+            {includeSubtasks && (
+              <div className="mb-3">
+                <div className="flex gap-2 mb-2">
+                  <input value={subtaskText} onChange={(e) => setSubtaskText(e.target.value)} placeholder="Adicionar subtarefa" className="flex-1 rounded px-3 py-2" />
+                  <button onClick={() => { if (subtaskText.trim()) { setSubtasks(s => [...s, { text: subtaskText.trim(), done: false }]); setSubtaskText(''); } }} className="px-3 py-2 rounded bg-slate-800 text-white">Adicionar</button>
+                </div>
+                <ul className="list-disc pl-5 text-sm">
+                  {subtasks.map((st, idx) => (
+                    <li key={idx} className="flex items-center justify-between">
+                      <span>{st.text}</span>
+                      <button onClick={() => setSubtasks(s => s.filter((_, i) => i !== idx))} className="text-xs text-red-400">Remover</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-sm text-slate-500 mb-4">Digite o título da tarefa para ver opções adicionais (data, prioridade, notas, subtarefas).</p>
         )}
 
         {/* CONTAINER DE TAREFAS */}
