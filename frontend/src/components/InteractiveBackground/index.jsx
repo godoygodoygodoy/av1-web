@@ -12,8 +12,8 @@ export default function InteractiveBackground() {
 
     const rect = () => container.getBoundingClientRect();
 
-    // initialize blobs internal state
-    const blobs = blobsRef.current.map((el, i) => ({
+    // initialize blobs internal state (ignore undefined refs)
+    const blobs = blobsRef.current.filter(Boolean).map((el, i) => ({
       el,
       x: 0,
       y: 0,
@@ -79,8 +79,9 @@ export default function InteractiveBackground() {
       stateRef.current.raf = requestAnimationFrame(animate);
     };
 
-    container.addEventListener('mousemove', handleMove);
-    container.addEventListener('touchmove', handleMove, { passive: true });
+    // listen on window so pointer-events:none on container doesn't block events
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('touchmove', handleMove, { passive: true });
 
     // start animation loop
     if (!stateRef.current.running) {
@@ -93,8 +94,8 @@ export default function InteractiveBackground() {
     onMove(r0.left + r0.width / 2, r0.top + r0.height / 2);
 
     return () => {
-      container.removeEventListener('mousemove', handleMove);
-      container.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('touchmove', handleMove);
       if (stateRef.current.raf) cancelAnimationFrame(stateRef.current.raf);
       stateRef.current.running = false;
     };
