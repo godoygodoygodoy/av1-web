@@ -6,3 +6,16 @@
 	font-family: 'Press Start 2P', monospace;
 	letter-spacing: 0.02em;
 }
+
+/* local pacmania font - place pacmania.ttf under src/assets/pacmania/pacmania.ttf */
+@font-face {
+	font-family: 'PacmaniaLocal';
+	src: url('./assets/pacmania/pacmania.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+.pacmania-font {
+	font-family: 'PacmaniaLocal', 'Press Start 2P', monospace;
+}
