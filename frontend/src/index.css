@@ -10,9 +10,17 @@
 /* local pacmania font - place pacmania.ttf under src/assets/pacmania/pacmania.ttf */
 @font-face {
 	font-family: 'PacmaniaLocal';
-	src: url('./assets/pacmania/pacmania.ttf') format('truetype');
+	src: url('./assets/pacmania/Pacmania.otf') format('opentype');
 	font-weight: normal;
 	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'PacmaniaLocal';
+	src: url('./assets/pacmania/Pacmania%20Italic.otf') format('opentype');
+	font-weight: 400;
+	font-style: italic;
 	font-display: swap;
 }
 

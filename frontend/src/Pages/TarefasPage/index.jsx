@@ -165,7 +165,7 @@ export default function TaskFlow() {
 
       <main className="w-full max-w-3xl p-6 rounded-3xl shadow-2xl mt-10 z-10" style={{ background: 'rgba(0,8,20,0.6)', border: '1px solid #0033A9' }}>
         
-        <h1 className="text-3xl font-extrabold text-center mb-2 pacman-font" style={{ color: '#FFD800' }}>Lista de Tarefas</h1>
+        <h1 className="text-3xl font-extrabold text-center mb-2 pacmania-font" style={{ color: '#FFD800' }}>Lista de Tarefas</h1>
         <p className="text-center text-sm mb-6" style={{ color: '#9FCBF7' }}>Cadastre tarefas no frontend e visualize no MySQL.</p>
 
         {/* FORMULÁRIO DE CADASTRO */}
@@ -251,7 +251,7 @@ export default function TaskFlow() {
         <div className="rounded-xl p-4" style={{ background: 'rgba(0,6,18,0.55)', border: '1px solid #001f54' }}>
           <div className="flex justify-between items-center border-b pb-3 mb-4" style={{ borderColor: '#001f54' }}>
             <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9FCBF7' }}>Tarefas Cadastradas</h2>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full pacman-font" style={{ background: '#FFD800', color: '#04162a' }}>{tarefas.length}</span>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full pacmania-font" style={{ background: '#FFD800', color: '#04162a' }}>{tarefas.length}</span>
           </div>
 
           {/* STATUS DA REQUISIÇÃO */}
