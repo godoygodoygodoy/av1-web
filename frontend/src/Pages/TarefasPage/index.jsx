@@ -135,16 +135,17 @@ export default function TaskFlow() {
       <Header />
       <Toast message={toast} />
 
-      <main className="w-full max-w-3xl bg-slate-800/80 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-700 mt-10 z-10">
+      <main className="w-full max-w-3xl p-6 rounded-3xl shadow-2xl mt-10 z-10" style={{ background: 'rgba(0,8,20,0.6)', border: '1px solid #0033A9' }}>
         
-        <h1 className="text-3xl font-extrabold text-center text-indigo-400 mb-2">Lista de Tarefas</h1>
-        <p className="text-slate-400 text-center text-sm mb-6">Cadastre tarefas no frontend e visualize no MySQL.</p>
+        <h1 className="text-3xl font-extrabold text-center mb-2" style={{ color: '#FFD800' }}>Lista de Tarefas</h1>
+        <p className="text-center text-sm mb-6" style={{ color: '#9FCBF7' }}>Cadastre tarefas no frontend e visualize no MySQL.</p>
 
         {/* FORMULÁRIO DE CADASTRO */}
         <form onSubmit={adicionarTarefa} className="flex gap-2 mb-6" aria-label="Adicionar tarefa">
           <input
             type="text"
-            className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors placeholder-slate-500"
+            className="flex-1 rounded-xl px-4 py-3 text-slate-100 focus:outline-none transition-colors placeholder-slate-500"
+            style={{ background: 'rgba(2,6,23,0.7)', border: '1px solid #0033A9' }}
             placeholder="Digite uma nova tarefa..."
             value={novaTarefa}
             onChange={(e) => setNovaTarefa(e.target.value)}
@@ -152,17 +153,18 @@ export default function TaskFlow() {
           <button
             type="submit"
             disabled={!novaTarefa.trim()}
-            className={`bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 active:scale-95 ${!novaTarefa.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`font-bold px-6 rounded-xl transition-all active:scale-95 ${!novaTarefa.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+            style={{ backgroundColor: '#FFD800', color: '#04162a', boxShadow: '0 8px 24px rgba(255,216,0,0.12)' }}
           >
             Salvar
           </button>
         </form>
 
         {/* CONTAINER DE TAREFAS */}
-        <div className="bg-slate-950/60 rounded-xl p-4 border border-slate-800">
-          <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Tarefas Cadastradas</h2>
-            <span className="bg-slate-800 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-full">{tarefas.length}</span>
+        <div className="rounded-xl p-4" style={{ background: 'rgba(0,6,18,0.55)', border: '1px solid #001f54' }}>
+          <div className="flex justify-between items-center border-b pb-3 mb-4" style={{ borderColor: '#001f54' }}>
+            <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9FCBF7' }}>Tarefas Cadastradas</h2>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: '#FFD800', color: '#04162a' }}>{tarefas.length}</span>
           </div>
 
           {/* STATUS DA REQUISIÇÃO */}
@@ -181,7 +183,7 @@ export default function TaskFlow() {
 
           <ul className="space-y-2">
             {tarefas.map((tarefa) => (
-              <li key={tarefa.id} className="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors group">
+              <li key={tarefa.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: 'rgba(0,6,12,0.6)', border: '1px solid rgba(2,18,50,0.6)' }}>
                 <div className="flex items-center gap-3 flex-1 mr-4">
                   {/* Checkbox baseado em 'completed' (inglês do banco) */}
                   <input
@@ -194,14 +196,15 @@ export default function TaskFlow() {
                   {editandoId === tarefa.id ? (
                     <input
                       type="text"
-                      className="flex-1 bg-slate-950 border border-indigo-500 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none"
+                      className="flex-1 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none"
+                      style={{ background: 'rgba(2,6,23,0.7)', border: '1px solid #0033A9' }}
                       value={textoEditando}
                       onChange={(e) => setTextoEditando(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && salvarEdicao(tarefa.id, tarefa.completed)}
                     />
                   ) : (
                     // Exibe o texto vindo de 'title' (inglês do banco)
-                    <span className={`text-sm transition-all ${tarefa.completed ? 'line-through text-slate-500' : 'text-slate-200'}`}>
+                    <span className={`text-sm transition-all ${tarefa.completed ? 'line-through' : ''}`} style={{ color: tarefa.completed ? '#6b7280' : '#E6F7FF' }}>
                       {tarefa.title}
                     </span>
                   )}
@@ -210,7 +213,7 @@ export default function TaskFlow() {
                 {/* BOTÕES DE AÇÃO */}
                 <div className="flex items-center gap-1">
                   {editandoId === tarefa.id ? (
-                    <button onClick={() => salvarEdicao(tarefa.id, tarefa.completed)} className="text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-2.5 py-1.5 rounded font-medium transition-colors">
+                    <button onClick={() => salvarEdicao(tarefa.id, tarefa.completed)} className="text-xs px-2.5 py-1.5 rounded font-medium transition-colors" style={{ background: 'rgba(24,255,255,0.08)', color: '#00e5ff' }}>
                       Salvar
                     </button>
                   ) : (
@@ -224,7 +227,7 @@ export default function TaskFlow() {
                       Editar
                     </button>
                   )}
-                  <button onClick={() => deletarTarefa(tarefa.id)} className="text-xs bg-red-600/10 hover:bg-red-600/20 text-red-400 px-2.5 py-1.5 rounded font-medium transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <button onClick={() => deletarTarefa(tarefa.id)} className="text-xs px-2.5 py-1.5 rounded font-medium transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" style={{ background: 'rgba(255,23,68,0.06)', color: '#ff4060' }}>
                     Excluir
                   </button>
                 </div>
