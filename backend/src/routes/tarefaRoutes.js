@@ -8,6 +8,11 @@
 
 import express from "express";
 import TarefaController from "../controllers/tarefaController.js"; // 👈 AJUSTADO: Importação limpa para bater com o export default
+import {
+	validateCreate,
+	validateUpdate,
+	handleValidation,
+} from "../middlewares/validators/tarefaValidators.js";
 
 // Cria um roteador do Express
 const router = express.Router();
@@ -29,12 +34,22 @@ router.get("/tarefas/:id", TarefaController.buscarPorId); // 👈 AJUSTADO: Muda
 /**
  * POST /tarefas - Cria uma nova tarefa
  */
-router.post("/tarefas", TarefaController.criar);
+router.post(
+	"/tarefas",
+	validateCreate,
+	handleValidation,
+	TarefaController.criar
+);
 
 /**
  * PUT /tarefas/:id - Atualiza uma tarefa
  */
-router.put("/tarefas/:id", TarefaController.atualizar);
+router.put(
+	"/tarefas/:id",
+	validateUpdate,
+	handleValidation,
+	TarefaController.atualizar
+);
 
 /**
  * DELETE /tarefas/:id - Exclui uma tarefa

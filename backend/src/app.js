@@ -31,8 +31,10 @@ app.get("/", (req, res) => {
 // ========================================
 // INICIALIZAÇÃO DO SERVIDOR
 // ========================================
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando com CORS em http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando com CORS em http://localhost:${PORT}`);
+  });
+}
 
 export default app;
