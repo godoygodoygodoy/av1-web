@@ -8,7 +8,20 @@ const TarefaController = {
       const tarefas = await prisma.task.findMany({
         include: { category: true }
       });
-      res.json(tarefas);
+      // Try to parse JSON descriptions so frontend receives structured data when available
+      const processed = tarefas.map(t => {
+        let desc = t.description;
+        try {
+          if (typeof desc === 'string') {
+            const parsed = JSON.parse(desc);
+            desc = parsed;
+          }
+        } catch (e) {
+          // leave as string
+        }
+        return { ...t, description: desc };
+      });
+      res.json(processed);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -37,13 +50,19 @@ const TarefaController = {
   criar: async (req, res) => {
     try {
       const { titulo, descricao } = req.body;
+      // If descricao is object, stringify to persist in the string field
+      const descriptionToStore = (descricao && typeof descricao === 'object') ? JSON.stringify(descricao) : (descricao || "");
       const novaTarefa = await prisma.task.create({
         data: {
           title: titulo,
-          description: descricao || "",
+          description: descriptionToStore,
           completed: false
         }
       });
+      // Return parsed description when possible
+      let returnedDesc = novaTarefa.description;
+      try { returnedDesc = JSON.parse(returnedDesc); } catch (e) {}
+      const returned = { ...novaTarefa, description: returnedDesc };
       res.status(201).json(novaTarefa);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -54,15 +73,18 @@ const TarefaController = {
   atualizar: async (req, res) => {
     try {
       const { id } = req.params;
-      const { titulo, concluida } = req.body;
+      const { titulo, concluida, descricao } = req.body;
+      const dataToUpdate = { title: titulo, completed: concluida };
+      if (descricao !== undefined) {
+        dataToUpdate.description = (typeof descricao === 'object') ? JSON.stringify(descricao) : descricao;
+      }
       const tarefaAtualizada = await prisma.task.update({
         where: { id: Number(id) },
-        data: {
-          title: titulo,
-          completed: concluida
-        }
+        data: dataToUpdate
       });
-      res.json(tarefaAtualizada);
+      let returnedDesc = tarefaAtualizada.description;
+      try { returnedDesc = JSON.parse(returnedDesc); } catch (e) {}
+      res.json({ ...tarefaAtualizada, description: returnedDesc });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

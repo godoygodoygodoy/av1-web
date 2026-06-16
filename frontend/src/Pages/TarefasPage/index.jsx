@@ -6,6 +6,15 @@ import PacmanButton from '../../components/PacmanButton';
 export default function TaskFlow() {
   const [tarefas, setTarefas] = useState([]);
   const [novaTarefa, setNovaTarefa] = useState('');
+  const [includeDate, setIncludeDate] = useState(false);
+  const [dateValue, setDateValue] = useState('');
+  const [includePriority, setIncludePriority] = useState(false);
+  const [priorityValue, setPriorityValue] = useState('');
+  const [includeNotes, setIncludeNotes] = useState(false);
+  const [notesValue, setNotesValue] = useState('');
+  const [includeSubtasks, setIncludeSubtasks] = useState(false);
+  const [subtaskText, setSubtaskText] = useState('');
+  const [subtasks, setSubtasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState('');
@@ -48,18 +57,36 @@ export default function TaskFlow() {
     }
 
     try {
+      // Build descricao: if user selected extra fields, send an object
+      let descricaoPayload = novaTarefa;
+      const hasExtras = includeDate || includePriority || includeNotes || includeSubtasks;
+      if (hasExtras) {
+        descricaoPayload = {
+          text: novaTarefa,
+          when: includeDate ? dateValue : null,
+          priority: includePriority ? priorityValue : null,
+          notes: includeNotes ? notesValue : null,
+          subtasks: includeSubtasks ? subtasks.slice() : []
+        };
+      }
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           titulo: novaTarefa, // O controller vai traduzir isso para 'title'
-          descricao: ""
+          descricao: descricaoPayload
         }),
       });
 
       if (!response.ok) throw new Error('Erro ao adicionar tarefa.');
       
       setNovaTarefa('');
+      // reset extras
+      setIncludeDate(false); setDateValue('');
+      setIncludePriority(false); setPriorityValue('');
+      setIncludeNotes(false); setNotesValue('');
+      setIncludeSubtasks(false); setSubtasks([]); setSubtaskText('');
       carregarTarefas(); // Atualiza a lista automaticamente
       setToast('Tarefa criada com sucesso!');
       setTimeout(() => setToast(''), 2500);
@@ -161,6 +188,59 @@ export default function TaskFlow() {
           </button>
         </form>
 
+        {/* Optional fields chooser */}
+        <div className="flex flex-wrap gap-3 mb-6">
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={includeDate} onChange={(e) => setIncludeDate(e.target.checked)} /> Quando
+          </label>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={includePriority} onChange={(e) => setIncludePriority(e.target.checked)} /> Prioridade
+          </label>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={includeNotes} onChange={(e) => setIncludeNotes(e.target.checked)} /> Notas
+          </label>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={includeSubtasks} onChange={(e) => setIncludeSubtasks(e.target.checked)} /> Subtarefas
+          </label>
+        </div>
+
+        {includeDate && (
+          <div className="mb-3">
+            <input type="date" value={dateValue} onChange={(e) => setDateValue(e.target.value)} className="rounded px-3 py-2" />
+          </div>
+        )}
+        {includePriority && (
+          <div className="mb-3">
+            <select value={priorityValue} onChange={(e) => setPriorityValue(e.target.value)} className="rounded px-3 py-2">
+              <option value="">-- escolha --</option>
+              <option value="low">Baixa</option>
+              <option value="medium">Média</option>
+              <option value="high">Alta</option>
+            </select>
+          </div>
+        )}
+        {includeNotes && (
+          <div className="mb-3">
+            <textarea placeholder="Notas adicionais" value={notesValue} onChange={(e) => setNotesValue(e.target.value)} className="w-full rounded px-3 py-2" />
+          </div>
+        )}
+        {includeSubtasks && (
+          <div className="mb-3">
+            <div className="flex gap-2 mb-2">
+              <input value={subtaskText} onChange={(e) => setSubtaskText(e.target.value)} placeholder="Adicionar subtarefa" className="flex-1 rounded px-3 py-2" />
+              <button onClick={() => { if (subtaskText.trim()) { setSubtasks(s => [...s, { text: subtaskText.trim(), done: false }]); setSubtaskText(''); } }} className="px-3 py-2 rounded bg-slate-800 text-white">Adicionar</button>
+            </div>
+            <ul className="list-disc pl-5 text-sm">
+              {subtasks.map((st, idx) => (
+                <li key={idx} className="flex items-center justify-between">
+                  <span>{st.text}</span>
+                  <button onClick={() => setSubtasks(s => s.filter((_, i) => i !== idx))} className="text-xs text-red-400">Remover</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* CONTAINER DE TAREFAS */}
         <div className="rounded-xl p-4" style={{ background: 'rgba(0,6,18,0.55)', border: '1px solid #001f54' }}>
           <div className="flex justify-between items-center border-b pb-3 mb-4" style={{ borderColor: '#001f54' }}>
@@ -184,7 +264,7 @@ export default function TaskFlow() {
 
           <ul className="space-y-2">
             {tarefas.map((tarefa) => (
-              <li key={tarefa.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: 'rgba(0,6,12,0.6)', border: '1px solid rgba(2,18,50,0.6)' }}>
+                <li key={tarefa.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: 'rgba(0,6,12,0.6)', border: '1px solid rgba(2,18,50,0.6)' }}>
                 <div className="flex items-center gap-3 flex-1 mr-4">
                   {/* Checkbox baseado em 'completed' (inglês do banco) */}
                   <PacmanButton active={tarefa.completed} onClick={() => alternarConclusao(tarefa.id, tarefa.title, tarefa.completed)} />
@@ -200,9 +280,28 @@ export default function TaskFlow() {
                     />
                   ) : (
                     // Exibe o texto vindo de 'title' (inglês do banco)
-                    <span className={`text-sm transition-all ${tarefa.completed ? 'line-through' : ''}`} style={{ color: tarefa.completed ? '#6b7280' : '#E6F7FF' }}>
-                      {tarefa.title}
-                    </span>
+                    <div>
+                      <span className={`text-sm block transition-all ${tarefa.completed ? 'line-through' : ''}`} style={{ color: tarefa.completed ? '#6b7280' : '#E6F7FF' }}>
+                        {tarefa.title}
+                      </span>
+                      {/* show parsed description fields if present */}
+                      {tarefa.description && typeof tarefa.description === 'object' && (
+                        <div className="text-xs text-slate-400 mt-1">
+                          {tarefa.description.when && <div>Quando: {tarefa.description.when}</div>}
+                          {tarefa.description.priority && <div>Prioridade: {tarefa.description.priority}</div>}
+                          {tarefa.description.notes && <div>Notas: {tarefa.description.notes}</div>}
+                          {tarefa.description.subtasks && tarefa.description.subtasks.length > 0 && (
+                            <div>Subtarefas:
+                              <ul className="pl-4 list-disc">
+                                {tarefa.description.subtasks.map((st, i) => (
+                                  <li key={i} className={st.done ? 'line-through text-slate-500' : ''}>{st.text}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
 
