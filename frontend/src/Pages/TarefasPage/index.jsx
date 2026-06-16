@@ -137,7 +137,7 @@ export default function TaskFlow() {
 
       <main className="w-full max-w-3xl p-6 rounded-3xl shadow-2xl mt-10 z-10" style={{ background: 'rgba(0,8,20,0.6)', border: '1px solid #0033A9' }}>
         
-        <h1 className="text-3xl font-extrabold text-center mb-2" style={{ color: '#FFD800' }}>Lista de Tarefas</h1>
+        <h1 className="text-3xl font-extrabold text-center mb-2 pacman-font" style={{ color: '#FFD800' }}>Lista de Tarefas</h1>
         <p className="text-center text-sm mb-6" style={{ color: '#9FCBF7' }}>Cadastre tarefas no frontend e visualize no MySQL.</p>
 
         {/* FORMULÁRIO DE CADASTRO */}
@@ -164,7 +164,7 @@ export default function TaskFlow() {
         <div className="rounded-xl p-4" style={{ background: 'rgba(0,6,18,0.55)', border: '1px solid #001f54' }}>
           <div className="flex justify-between items-center border-b pb-3 mb-4" style={{ borderColor: '#001f54' }}>
             <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9FCBF7' }}>Tarefas Cadastradas</h2>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: '#FFD800', color: '#04162a' }}>{tarefas.length}</span>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full pacman-font" style={{ background: '#FFD800', color: '#04162a' }}>{tarefas.length}</span>
           </div>
 
           {/* STATUS DA REQUISIÇÃO */}
@@ -186,12 +186,66 @@ export default function TaskFlow() {
               <li key={tarefa.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: 'rgba(0,6,12,0.6)', border: '1px solid rgba(2,18,50,0.6)' }}>
                 <div className="flex items-center gap-3 flex-1 mr-4">
                   {/* Checkbox baseado em 'completed' (inglês do banco) */}
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-700 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer"
-                    checked={tarefa.completed}
-                    onChange={() => alternarConclusao(tarefa.id, tarefa.title, tarefa.completed)}
-                  />
+                  <button
+                    onClick={() => alternarConclusao(tarefa.id, tarefa.title, tarefa.completed)}
+                    aria-pressed={tarefa.completed}
+                    title={tarefa.completed ? 'Marcar como pendente' : 'Marcar como concluída'}
+                    style={{ width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
+                  >
+                    <svg width="28" height="28" viewBox="0 0 8 8" shapeRendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+                      {/* Pac-Man pixel art (8x8) */}
+                      <rect x="2" y="0" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="0" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="0" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="1" y="1" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="1" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="1" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="1" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="1" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="0" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="1" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="2" width="1" height="1" fill="#FFD800" />
+                      <rect x="6" y="2" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="0" y="3" width="1" height="1" fill="#FFD800" />
+                      <rect x="1" y="3" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="3" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="3" width="1" height="1" fill="#000814" />
+                      <rect x="4" y="3" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="3" width="1" height="1" fill="#FFD800" />
+                      <rect x="6" y="3" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="0" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="1" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="4" width="1" height="1" fill="#FFD800" />
+                      <rect x="6" y="4" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="0" y="5" width="1" height="1" fill="#FFD800" />
+                      <rect x="1" y="5" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="5" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="5" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="5" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="5" width="1" height="1" fill="#FFD800" />
+
+                      <rect x="1" y="6" width="1" height="1" fill="#FFD800" />
+                      <rect x="2" y="6" width="1" height="1" fill="#FFD800" />
+                      <rect x="3" y="6" width="1" height="1" fill="#FFD800" />
+                      <rect x="4" y="6" width="1" height="1" fill="#FFD800" />
+                      <rect x="5" y="6" width="1" height="1" fill="#FFD800" />
+
+                      {/* Olho quando não concluída */}
+                      {!tarefa.completed && <rect x="5" y="2" width="1" height="1" fill="#04162a" />}
+
+                    </svg>
+                  </button>
 
                   {editandoId === tarefa.id ? (
                     <input

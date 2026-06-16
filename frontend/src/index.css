@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Pac-Man pixel font for yellow texts */
+.pacman-font {
+	font-family: 'Press Start 2P', monospace;
+	letter-spacing: 0.02em;
+}
