@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../../components/Header';
+import Toast from '../../components/Toast/Toast';
 
 export default function TaskFlow() {
   const [tarefas, setTarefas] = useState([]);
   const [novaTarefa, setNovaTarefa] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState('');
 
   const [editandoId, setEditandoId] = useState(null);
   const [textoEditando, setTextoEditando] = useState('');
@@ -37,7 +40,11 @@ export default function TaskFlow() {
   // 2. CRIAR TAREFA (POST)
   const adicionarTarefa = async (e) => {
     e.preventDefault();
-    if (!novaTarefa.trim()) return;
+    if (!novaTarefa.trim()) {
+      // mensagem simples de validação
+      alert('Digite o título da tarefa antes de salvar.');
+      return;
+    }
 
     try {
       const response = await fetch(API_URL, {
@@ -53,8 +60,11 @@ export default function TaskFlow() {
       
       setNovaTarefa('');
       carregarTarefas(); // Atualiza a lista automaticamente
+      setToast('Tarefa criada com sucesso!');
+      setTimeout(() => setToast(''), 2500);
     } catch (err) {
-      alert(err.message);
+      setToast(err.message || 'Erro desconhecido');
+      setTimeout(() => setToast(''), 2500);
     }
   };
 
@@ -88,8 +98,11 @@ export default function TaskFlow() {
 
       if (!response.ok) throw new Error('Erro ao excluir tarefa.');
       carregarTarefas();
+      setToast('Tarefa excluída');
+      setTimeout(() => setToast(''), 2500);
     } catch (err) {
-      alert(err.message);
+      setToast(err.message || 'Erro desconhecido');
+      setTimeout(() => setToast(''), 2500);
     }
   };
 
@@ -118,14 +131,17 @@ export default function TaskFlow() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center p-6 font-sans">
-      <div className="w-full max-w-2xl bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700 mt-10">
+    <div className="min-h-screen bg-transparent text-slate-100 flex flex-col items-center p-6 font-sans relative">
+      <Header />
+      <Toast message={toast} />
+
+      <main className="w-full max-w-3xl bg-slate-800/80 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-700 mt-10 z-10">
         
         <h1 className="text-3xl font-extrabold text-center text-indigo-400 mb-2">Lista de Tarefas</h1>
         <p className="text-slate-400 text-center text-sm mb-6">Cadastre tarefas no frontend e visualize no MySQL.</p>
 
         {/* FORMULÁRIO DE CADASTRO */}
-        <form onSubmit={adicionarTarefa} className="flex gap-2 mb-6">
+        <form onSubmit={adicionarTarefa} className="flex gap-2 mb-6" aria-label="Adicionar tarefa">
           <input
             type="text"
             className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors placeholder-slate-500"
@@ -133,13 +149,17 @@ export default function TaskFlow() {
             value={novaTarefa}
             onChange={(e) => setNovaTarefa(e.target.value)}
           />
-          <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+          <button
+            type="submit"
+            disabled={!novaTarefa.trim()}
+            className={`bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 active:scale-95 ${!novaTarefa.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
             Salvar
           </button>
         </form>
 
         {/* CONTAINER DE TAREFAS */}
-        <div className="bg-slate-950 rounded-xl p-4 border border-slate-800">
+        <div className="bg-slate-950/60 rounded-xl p-4 border border-slate-800">
           <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Tarefas Cadastradas</h2>
             <span className="bg-slate-800 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-full">{tarefas.length}</span>
@@ -213,7 +233,7 @@ export default function TaskFlow() {
           </ul>
 
         </div>
-      </div>
+      </main>
     </div>
   );
 }

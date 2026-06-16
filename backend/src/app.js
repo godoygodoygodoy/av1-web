@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import tarefaRoutes from "./routes/tarefaRoutes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const app = express();
 const PORT = 3000;
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
 // ========================================
 // INICIALIZAÇÃO DO SERVIDOR
 // ========================================
+// middleware de erro centralizado (deve vir após as rotas)
+app.use(errorHandler);
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando com CORS em http://localhost:${PORT}`);
